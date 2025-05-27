@@ -7,19 +7,22 @@ import time
 
 # creates a neural network class
 NN = Network(lossFunc = "cross", learningRate = 0.001)
-NN.addLayer(128, "relu")
+NN.addLayer(32, "relu")
 NN.addLayer(7, "softmax")
+
+NN.createWeightsAndBiases()
+
+depths = [3, 32, 32, 32]
 
 # creates a convulational neural network class
 cnn = quacknet.convulationalManager.CNNModel(NN)
-# repeates Convolutional Block 4 times
 for i in range(4): 
     cnn.addLayer(ConvLayer(
         kernalSize = 3,
-        depth = 3,
+        depth = depths[i],
         numKernals = 32,
-        stride = 1, 
-        padding = "1"
+        stride = 2, 
+        padding = "n"
     ))
     cnn.addLayer(ActivationLayer())
     cnn.addLayer(PoolingLayer(
