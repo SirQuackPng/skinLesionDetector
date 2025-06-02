@@ -2,3 +2,4 @@
 data/
 rawData/
 processedData/
+modelWeights.npz
