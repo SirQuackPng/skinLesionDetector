@@ -62,8 +62,8 @@ labels = labels[indices]
 print("started") 
 start = time.time()
 accauracy, loss = cnn.train(
-    inputData=images[:batchSize * 10],
-    labels=labels[:batchSize * 10],
+    inputData=images,
+    labels=labels,
     useBatches=True,
     batchSize=batchSize,
     alpha=learningRate,
