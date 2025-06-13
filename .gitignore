@@ -3,3 +3,4 @@ data/
 rawData/
 processedData/
 modelWeights.npz
+copyModelWeights.npz

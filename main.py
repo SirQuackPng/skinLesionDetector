@@ -5,32 +5,37 @@ from quacknet.main import Network
 import numpy as np
 import time
 
-# creates a neural network class
-NN = Network(lossFunc = "cross", learningRate = 0.00025)
-NN.addLayer(128, "relu")
-NN.addLayer(3, "softmax")
+learningRate = 0.00025
+batchSize = 64
 
-#depths = [3, 32, 64]
-#numKernals = [32, 64, 128] 
+'''
+depths = [3, 32, 64]
+numKernals = [32, 64, 128] 
+'''
 
 depths = [3, 64]
 numKernals = [64, 128] 
 
+# creates a neural network class, with no hidden layers
+NN = Network(lossFunc = "cross", learningRate = learningRate)
+NN.addLayer(128, "relu")
+NN.addLayer(3, "softmax")
+
 # creates a convulational neural network class
 cnn = quacknet.convulationalManager.CNNModel(NN)
-for i in range(2): 
+for i in range(2): #creates 2 convulutional blocks
     cnn.addLayer(ConvLayer(
         kernalSize = 3,
         depth = depths[i],
         numKernals = numKernals[i],
         stride = 1, 
-        padding = "n"
+        padding = "n"  #no padding
     ))
     cnn.addLayer(ActivationLayer())
     cnn.addLayer(PoolingLayer(
         gridSize = 2,
         stride = 2,
-        mode = "max",
+        mode = "max", #using max pooling
     ))
 
 cnn.addLayer(PoolingLayer(
@@ -42,42 +47,31 @@ cnn.addLayer(DenseLayer(
     NN
 ))
 
-
-cnn.createWeightsBiases()
-NN.createWeightsAndBiases()
-cnn.saveModel(NN.weights, NN.biases, cnn.weights, cnn.biases)
-
+#loads weights and biases from a file
 cnn.loadModel(NN)
 
+#loads training images and labels
 images = np.load("processedData/training/ham10000_images.npy", mmap_mode='r')
 labels = np.load("processedData/training/ham10000_labels.npy", mmap_mode='r')
 
-# randomly shuffles images and labels
+# randomly shuffles images and labels, but makes it where the image corresponds to the right label
 indices = np.random.permutation(len(images))
 images = images[indices]
 labels = labels[indices]
 
-batchSize = 64
 print("started") 
 start = time.time()
 accauracy, loss = cnn.train(
-    inputData=images,
-    labels=labels,
+    inputData=images[:batchSize * 10],
+    labels=labels[:batchSize * 10],
     useBatches=True,
     batchSize=batchSize,
-    alpha=0.00025,
+    alpha=learningRate,
 )
+
 print(f"took: {(time.time() - start)} seconds or {(time.time() - start) / 60} minutes")
 print(f"accauracy: {accauracy}")
 print(f"loss: {loss}")
 
-
+#saves weights and biases
 cnn.saveModel(NN.weights, NN.biases, cnn.weights, cnn.biases)
-
-'''
-accauracy:
-
-
-loss:
-
-'''
