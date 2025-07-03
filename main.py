@@ -8,11 +8,6 @@ import time
 learningRate = 0.00025
 batchSize = 64
 
-'''
-depths = [3, 32, 64]
-numKernals = [32, 64, 128] 
-'''
-
 depths = [3, 64]
 numKernals = [64, 128] 
 
