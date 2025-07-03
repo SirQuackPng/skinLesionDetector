@@ -13,7 +13,7 @@ Rather than focusing solely on high accuracy, the aim was to understand the chal
 The HAM10000 dataset contains 10000+ dermatoscopic images across 7 classes. However the distribution is highly imbalanced:
 
 | Class | Count  |
-|----------------|
+|-------|--------|
 | nv    | 6705   |
 | mel   | 1113   |
 | bkl   | 1099   |
