@@ -13,8 +13,12 @@ so instead the model only trains on the 3 largest classes
 and also makes each class the same size so all of them 1099 size * 3
 
 so the dataset goes from 10000 to 3297
+
+but the images are flipped using data augmentation, so the dataset quadruples to 13188 
+
+also the images are split into a 80/20 split where 80% is training and 20% is testing
 '''
-from quacknet.dataAugmentation import Augementation
+from quacknet import Augementation
 import pandas as pd
 import numpy as np
 import os
@@ -60,8 +64,8 @@ for i in range(len(labelsAugmented)):
 
 sorted = np.argsort(count)
 largestClass = sorted[-1] #largest class index
-secondClass = sorted[-2] #second largest class index
-thirdClass = sorted[-3] #third largest class index
+secondClass = sorted[-2]  #second largest class index
+thirdClass = sorted[-3]   #third largest class index
 
 thirdLargestClass = int(count[thirdClass]) #gets the size of the 3rd largest class
 
@@ -77,5 +81,12 @@ for i in range(len(allClasses)):
         allImages.extend([sample[0] for sample in samples])
         allLabels.extend([sample[1] for sample in samples])
 
-np.save('processedData/training/ham10000_images.npy', np.array(allImages, dtype=np.float32))
-np.save('processedData/training/ham10000_labels.npy', np.array(allLabels))
+newImages, newLabels = augmentation.dataAugmentation(allImages, allLabels) #augmentates the images by flipping them which makes the dataset quadruple in size
+
+indexToSplitAt = len(allImages) * 8 // 10    # splits the images into 80/20 split
+
+np.save('processedData/training/ham10000_images.npy', np.array(allImages[0: indexToSplitAt - 1], dtype=np.float32))
+np.save('processedData/training/ham10000_labels.npy', np.array(allLabels[0: indexToSplitAt - 1]))
+
+np.save('processedData/test/ham10000_images.npy', np.array(allImages[indexToSplitAt: len(allImages) - 1], dtype=np.float32))
+np.save('processedData/test/ham10000_labels.npy', np.array(allLabels[indexToSplitAt: len(allImages) - 1]))
